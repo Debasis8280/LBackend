@@ -244,7 +244,7 @@ router.get("/getCourseData", auth, (req, res) => {
         res.json({
           data: data,
           result: "Ok",
-          image: `https://learn-backend.cfapps.us10.hana.ondemand.com/${req.query.collection}/`,
+          image: `https://learn-backend.zeet.app/${req.query.collection}/`,
         });
       }
     })
@@ -264,7 +264,7 @@ router.get("/search", auth, async (req, res) => {
     res.json({
       result: "Ok",
       data: data,
-      image: `http://localhost:8080/${req.query.collection}/`,
+      image: `https://learn-backend.zeet.app/${req.query.collection}/`,
     });
   } else {
     res.json({
@@ -283,7 +283,7 @@ router.get("/getSelectedData", auth, async (req, res) => {
       res.json({
         data: data,
         result: "Ok",
-        image: `http://localhost:8080/${req.query.collection}/`,
+        image: `https://learn-backend.zeet.app/${req.query.collection}/`,
       });
     } else {
       res.json({

@@ -38,7 +38,7 @@ router.get("/courseData", async (req, res) => {
         res.json({
             data: data,
             result: "Ok",
-            image: `http://localhost:8080/${req.query.collection}`
+            image: `https://learn-backend.zeet.app/${req.query.collection}`
         });
     } else {
         res.json({
@@ -58,7 +58,7 @@ router.get("/getDataUsingTitle",async(req, res) => {
          res.json({
              data:data,
              result:"Ok",
-             image:`http://localhost:8080/${req.query.collection}`
+             image:`https://learn-backend.zeet.app/${req.query.collection}`
          });
     }
     else{
