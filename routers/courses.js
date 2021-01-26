@@ -33,21 +33,20 @@ const imageFilter = function (req, file, cb) {
   }
   cb(null, true);
 };
-
-//create collection
 var limits = {
   files: 1, // allow only 1 file per request
   fileSize: 1024 * 1024, // 1 MB (max file size)
-  };
+};
+//create collection
 router.post("/createCollection", auth, async (req, res) => {
-  let upload = multer({ storage: storage, fileFilter: imageFilter, limits:limits }).single(
+  let upload = multer({ storage: storage, fileFilter: imageFilter, limits: limits }).single(
     "image"
   );
   upload(req, res, async function (err) {
     // req.file contains information of uploaded file
     // req.body contains information of text fields, if there were any
     if (err instanceof multer.MulterError) {
-        return  res.json({message:err.message + " Minimum Upload Size Under 1MB"});;
+      return res.json({ message: err.message + " Minimum Upload Size Under 1MB" });;
     }
     else if (req.fileValidationError) {
       return res.json({
@@ -87,7 +86,7 @@ router.post("/createCollection", auth, async (req, res) => {
             .create({
               courseName: req.body.courseName,
               coursePhoto: req.file.filename,
-              collectionName:req.body.collections
+              collectionName: req.body.collections
             })
             .then(() => {
               res.json({
@@ -105,10 +104,10 @@ router.get("/collection-list", auth, async (req, res) => {
   try {
     const collectioList = await mongoose.connection.db.listCollections().toArray();
     const data = collectioList.map(async (collection) => {
-      const model =   mongoose.model(collection.name, course);
-      const data =   model.findOne();
+      const model = mongoose.model(collection.name, course);
+      const data = model.findOne();
       return data;
-    }); 
+    });
     const result = await Promise.all(data);
     result.splice(0, 1);
     res.json({
@@ -178,10 +177,11 @@ router.post("/save", auth, async (req, res) => {
     limits:limits
   }).single("image");
   upload(req, res, async function (err) {
+    
     if (err instanceof multer.MulterError) {
-      return  res.json({message:err.message + " Minimum Upload Size Under 1MB"});;
-  }
-    if (req.fileValidationError) {
+      return res.json({ message: err.message + " Minimum Upload Size Under 1MB" });;
+    }
+    else if (req.fileValidationError) {
       return res.json({
         message: req.fileValidationError,
       });
@@ -209,38 +209,38 @@ router.post("/save", auth, async (req, res) => {
         .catch((err) => {
           res.json({ message: err.message });
         });
-    } else if(req.file){
+    } else if (req.file) {
       const model = mongoose.model(req.body.collectionCourse, course);
-    const { title, subtitle, body } = req.body;
-    if (title === "" || body === "") {
-      res.json({
-        message: "You Need To Fill All The Field",
-      });
-    }
-    model
-      .create({
-        title: title,
-        subtitle: subtitle,
-        photo: req.file.filename,
-        body: body,
-      })
-      .then(() => {
+      const { title, subtitle, body } = req.body;
+      if (title === "" || body === "") {
         res.json({
-          message: "Save SuccessFully",
-          result: "Ok",
+          message: "You Need To Fill All The Field",
         });
-      })
-      .catch((err) => {
-        res.json({ message: err.message });
-      });
+      }
+      model
+        .create({
+          title: title,
+          subtitle: subtitle,
+          photo: req.file.filename,
+          body: body,
+        })
+        .then(() => {
+          res.json({
+            message: "Save SuccessFully",
+            result: "Ok",
+          });
+        })
+        .catch((err) => {
+          res.json({ message: err.message });
+        });
     }
-    
+
     else if (err instanceof multer.MulterError) {
       return res.json({ message: err });
     } else if (err) {
       return res.json({ message: err });
     }
-   });
+  });
 });
 
 //get course Data
@@ -253,7 +253,7 @@ router.get("/getCourseData", auth, (req, res) => {
         res.json({
           data: data,
           result: "Ok",
-          image: `http://localhost:8080/${req.query.collection}/`,
+          image: `https://learn-backend.zeet.app/${req.query.collection}/`,
         });
       }
     })
@@ -273,7 +273,7 @@ router.get("/search", auth, async (req, res) => {
     res.json({
       result: "Ok",
       data: data,
-      image: `http://localhost:8080/${req.query.collection}/`,
+      image: `https://learn-backend.zeet.app/${req.query.collection}/`,
     });
   } else {
     res.json({
@@ -292,7 +292,7 @@ router.get("/getSelectedData", auth, async (req, res) => {
       res.json({
         data: data,
         result: "Ok",
-        image: `http://localhost:8080/${req.query.collection}/`,
+        image: `https://learn-backend.zeet.app/${req.query.collection}/`,
       });
     } else {
       res.json({
