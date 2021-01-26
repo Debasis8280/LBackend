@@ -35,15 +35,21 @@ const imageFilter = function (req, file, cb) {
 };
 
 //create collection
+var limits = {
+  files: 1, // allow only 1 file per request
+  fileSize: 1024 * 1024, // 1 MB (max file size)
+  };
 router.post("/createCollection", auth, async (req, res) => {
-  let upload = multer({ storage: storage, fileFilter: imageFilter }).single(
+  let upload = multer({ storage: storage, fileFilter: imageFilter, limits:limits }).single(
     "image"
   );
   upload(req, res, async function (err) {
     // req.file contains information of uploaded file
     // req.body contains information of text fields, if there were any
-
-    if (req.fileValidationError) {
+    if (err instanceof multer.MulterError) {
+        return  res.json({message:err.message + " Minimum Upload Size Under 1MB"});;
+    }
+    else if (req.fileValidationError) {
       return res.json({
         message: req.fileValidationError,
       });
@@ -169,9 +175,12 @@ router.post("/save", auth, async (req, res) => {
   let upload = multer({
     storage: storageCourseImage,
     fileFilter: CourseImageFilter,
+    limits:limits
   }).single("image");
   upload(req, res, async function (err) {
-    //console.log(req.file.filename+"aasdsd")
+    if (err instanceof multer.MulterError) {
+      return  res.json({message:err.message + " Minimum Upload Size Under 1MB"});;
+  }
     if (req.fileValidationError) {
       return res.json({
         message: req.fileValidationError,
@@ -244,7 +253,7 @@ router.get("/getCourseData", auth, (req, res) => {
         res.json({
           data: data,
           result: "Ok",
-          image: `https://learn-backend.zeet.app/${req.query.collection}/`,
+          image: `http://localhost:8080/${req.query.collection}/`,
         });
       }
     })
@@ -264,7 +273,7 @@ router.get("/search", auth, async (req, res) => {
     res.json({
       result: "Ok",
       data: data,
-      image: `https://learn-backend.zeet.app/${req.query.collection}/`,
+      image: `http://localhost:8080/${req.query.collection}/`,
     });
   } else {
     res.json({
@@ -283,7 +292,7 @@ router.get("/getSelectedData", auth, async (req, res) => {
       res.json({
         data: data,
         result: "Ok",
-        image: `https://learn-backend.zeet.app/${req.query.collection}/`,
+        image: `http://localhost:8080/${req.query.collection}/`,
       });
     } else {
       res.json({
